@@ -5,8 +5,7 @@ object Day1 {
   def parseInput(input: String) =
     input
       .split("\n\n")
-      .map(_.split("\n"))
-      .map(_.map(_.toInt))
+      .map(_.split("\n").map(_.toInt))
 
   def solve1(parsedInput: Array[Array[Int]]): Int =
     parsedInput.map(_.sum).max
