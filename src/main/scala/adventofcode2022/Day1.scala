@@ -1,6 +1,6 @@
 package adventofcode2022
 
-object Day1Part1 {
+object Day1 {
 
   def parseInput(input: String) =
     input
