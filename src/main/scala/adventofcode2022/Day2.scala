@@ -35,16 +35,20 @@ object Day2 {
     "Y" -> Draw,
     "Z" -> Win
   )
+
+  def substitute(letter: String, subsitutions: Map[String, Game]): Game =
+    subsitutions.getOrElse(
+      letter,
+      throw new Exception("bad input")
+    )
+
   def parseInput(input: String, subsitutions: Map[String, Game]) =
     input
       .split("\n")
       .toSeq
       .map(_.split(" ").toSeq match {
         case Seq(x, y) =>
-          subsitutions.getOrElse(
-            x,
-            throw new Exception("bad input")
-          ) -> subsitutions.getOrElse(y, throw new Exception("bad input"))
+          substitute(x, subsitutions) -> substitute(y, subsitutions)
         case _ => throw new Exception("bad input")
       })
 
