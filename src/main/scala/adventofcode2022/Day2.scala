@@ -19,7 +19,7 @@ object Day2 {
 
   object Win extends PossibleEndings
 
-  val substitutions: Map[String, Hand] = Map(
+  val substitutionsPart1: Map[String, Hand] = Map(
     "A" -> Rock,
     "B" -> Paper,
     "C" -> Scissors,
@@ -35,33 +35,20 @@ object Day2 {
     "Y" -> Draw,
     "Z" -> Win
   )
-  def parseInput(input: String) =
+  def parseInput(input: String, subsitutions: Map[String, Game]) =
     input
       .split("\n")
       .toSeq
       .map(_.split(" ").toSeq match {
         case Seq(x, y) =>
-          substitutions.getOrElse(
+          subsitutions.getOrElse(
             x,
             throw new Exception("bad input")
-          ) -> substitutions.getOrElse(y, throw new Exception("bad input"))
+          ) -> subsitutions.getOrElse(y, throw new Exception("bad input"))
         case _ => throw new Exception("bad input")
       })
 
-  def parseInput2(input: String) =
-    input
-      .split("\n")
-      .toSeq
-      .map(_.split(" ").toSeq match {
-        case Seq(x, y) =>
-          substitutionsPart2.getOrElse(
-            x,
-            throw new Exception("bad input")
-          ) -> substitutionsPart2.getOrElse(y, throw new Exception("bad input"))
-        case _ => throw new Exception("bad input")
-      })
-
-  def solve1(parsedInput: Seq[(Hand, Hand)]) =
+  def solve1(parsedInput: Seq[(Game, Game)]) =
     parsedInput.map {
 
       case (Rock, Paper)    => 6 + 2
@@ -100,8 +87,7 @@ object Day2 {
     .trim
 
   def main(args: Array[String]): Unit = {
-    println(solve1(parseInput(input)))
-    println(solve2(parseInput2(input)))
-
+    println(solve1(parseInput(input, substitutionsPart1)))
+    println(solve2(parseInput(input, substitutionsPart2)))
   }
 }
