@@ -23,9 +23,7 @@ object Day3 {
   def solve2(parsedInput: Seq[String]) =
     parsedInput
       .grouped(3)
-      .flatMap { case Seq(a, b, c) =>
-        a.toSet.intersect(b.toSet).intersect(c.toSet)
-      }
+      .flatMap(_.map(_.toSet).reduce(_.intersect(_)))
       .map(charToInt)
       .sum
 
