@@ -10,13 +10,8 @@ object Day3 {
 
   def solve1(parsedInput: Seq[String]) =
     parsedInput
-      .map(x =>
-        (
-          x.slice(0, x.length / 2).toSet,
-          x.slice(x.length / 2, x.length).toSet
-        )
-      )
-      .flatMap(x => x._1.intersect(x._2).toSeq)
+      .map(x => x.splitAt(x.length / 2))
+      .flatMap(x => x._1.toSet.intersect(x._2.toSet).toSeq)
       .map(charToInt)
       .sum
 
