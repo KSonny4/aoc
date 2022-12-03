@@ -2,11 +2,6 @@ package adventofcode2022
 
 object Day3 {
 
-  def parseInput(input: String) =
-    input
-      .split("\n")
-      .toSeq
-
   def charToInt(char: Char) =
     char match {
       case x if x.isUpper => x.toInt - 38
@@ -34,13 +29,13 @@ object Day3 {
       .map(charToInt)
       .sum
 
-  lazy val input: String = io.Source
+  lazy val input: Seq[String] = io.Source
     .fromInputStream(getClass.getResourceAsStream("day3.txt"))
-    .mkString
-    .trim
+    .getLines()
+    .toSeq
 
   def main(args: Array[String]): Unit = {
-    println(solve1(parseInput(input)))
-    println(solve2(parseInput(input)))
+    println(solve1(input))
+    println(solve2(input))
   }
 }
