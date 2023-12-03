@@ -23,6 +23,10 @@ fn push_number(numbers: &mut Vec<Vec<NumberLocation>>, number: &mut Vec<NumberLo
 }
 
 fn main() {
+    // this is the most ugly code i have ever written :D
+    // optimize: there is no point to check all the numbers against one "*"
+    // optimize: a lot of for loops
+    // OR! rewrite the whole stuff :D as there are better ways to get the result :D
     let data: Vec<Vec<char>> = include_str!("input.txt")
         .lines()
         .map(|line| line.chars().collect())
