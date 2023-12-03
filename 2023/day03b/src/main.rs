@@ -1,6 +1,7 @@
 use std::iter::zip;
 use rayon::prelude::*;
 use std::sync::{Mutex, Arc};
+use std::time::Instant; // Add this import
 
 #[derive(Debug, Clone, PartialEq)]
 struct Location {
@@ -22,7 +23,6 @@ fn push_number(numbers: &mut Vec<Vec<NumberLocation>>, number: &mut Vec<NumberLo
 }
 
 fn main() {
-    // worst code ever, but no time to optimize. I rather read a book :D
     let data: Vec<Vec<char>> = include_str!("input.txt")
         .lines()
         .map(|line| line.chars().collect())
@@ -40,6 +40,7 @@ fn main() {
         push_number(&mut numbers, &mut number);
     }
 
+    let start_time = Instant::now(); // Record start time
 
     let gears = Arc::new(Mutex::new(Vec::new()));
 
@@ -55,11 +56,14 @@ fn main() {
     // Extract the Vec<i32> from the Mutex after all threads finish
     let gears = Arc::try_unwrap(gears).unwrap().into_inner().unwrap();
 
+    let stop_time = Instant::now(); // Record stop time
+    let elapsed_time = stop_time - start_time; // Calculate elapsed time
+
     println!("{:?}", gears);
     let s: i32 = gears.iter().sum();
     println!("{:?}", s);
+    println!("Elapsed time: {:?}", elapsed_time);
 }
-
 fn check_gears(index_row: usize, index_col: usize, numbers: &Vec<Vec<NumberLocation>>) -> i32 {
     // too lazy to write this optimized
     println!("{},{}", index_row, index_col);
