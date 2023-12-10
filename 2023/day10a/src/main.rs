@@ -1,28 +1,27 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::HashSet;
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone)]
 struct Point {
     value: String,
     loc_x: usize,
-    loc_y: usize
+    loc_y: usize,
 }
 
 
 fn dfs(start: &Point, input: Vec<Vec<Point>>) -> Option<Vec<Point>> {
     let mut visited: HashSet<Point> = HashSet::new();
     let mut history: Vec<Point> = Vec::new();
-    let mut stack: VecDeque<Point> = VecDeque::new();
+    let mut current_vertex: Point;
 
-    stack.push_front(start.clone());
+    current_vertex = start.clone();
     visited.insert(start.clone());
 
-    while let Some(current_vertex) = stack.pop_front() {
-
+    loop {
         history.push(current_vertex.clone());
 
-        let current_vertex_conns = connected_to(current_vertex.clone(), input.clone());
+        let current_vertex_conns = connected_to(current_vertex.clone(), &input);
         for neighbor in current_vertex_conns {
-            let neigh_vertex_conns = connected_to(neighbor.clone(), input.clone());
+            let neigh_vertex_conns = connected_to(neighbor.clone(), &input);
             if neigh_vertex_conns.contains(&current_vertex) {
                 if neighbor.value == "S" && history.len() > 2 {
                     history.push(neighbor);
@@ -30,13 +29,12 @@ fn dfs(start: &Point, input: Vec<Vec<Point>>) -> Option<Vec<Point>> {
                 }
 
                 if visited.insert(neighbor.clone()) {
-                    stack.push_front(neighbor.clone());
+                    current_vertex = neighbor.clone();
                     break; // no need for other vecs
                 }
             }
         }
     }
-    None
 }
 
 fn main() {
@@ -64,7 +62,7 @@ fn main() {
     // }
 
 
-    let start: &Point = input.iter().find_map(| row| {
+    let start: &Point = input.iter().find_map(|row| {
         row.iter().find_map(|col| {
             if col.value == "S" {
                 Some(col)
@@ -81,7 +79,6 @@ fn main() {
     // println!("{:?}", start);
 
 
-
     let cycle = dfs(start, input.clone());
 
     // println!("{:#?}", cycle.clone());
@@ -90,7 +87,7 @@ fn main() {
 }
 
 
-fn connected_to(current_point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn connected_to(current_point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     // | is a vertical pipe connecting north and south.
     // - is a horizontal pipe connecting east and west.
     // L is a 90-degree bend connecting north and east.
@@ -101,21 +98,19 @@ fn connected_to(current_point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
     // S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
 
     match current_point.value.as_str() {
-        "|" => vertical_pipe_conns(&current_point, input),
-          "-" => horizontal_pipe_conns(current_point, input),
-         "L" => L_pipe_conns(current_point, input),
-         "J" => J_pipe_conns(current_point, input),
-         "7" => seven_pipe_conns(current_point, input),
-        "F" => F_pipe_conns(current_point, input),
-         "." => vec![],
-         "S" => S_pipe_conns(current_point, input),
+        "|" => vertical_pipe_conns(&current_point, &input),
+        "-" => horizontal_pipe_conns(current_point, &input),
+        "L" => l_pipe_conns(current_point, &input),
+        "J" => j_pipe_conns(current_point, &input),
+        "7" => seven_pipe_conns(current_point, &input),
+        "F" => f_pipe_conns(current_point, &input),
+        "." => vec![],
+        "S" => s_pipe_conns(current_point, &input),
         _ => panic!()
-
-
     }
 }
 
-fn vertical_pipe_conns(point: &Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn vertical_pipe_conns(point: &Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let mut v = Vec::new();
 
     for &col_offset in &[1, -1] {
@@ -134,11 +129,11 @@ fn vertical_pipe_conns(point: &Point, input: Vec<Vec<Point>>) -> Vec<Point> {
 }
 
 
-fn S_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn s_pipe_conns(point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let offsets = [
-         (-1, 0),
+        (-1, 0),
         (0, -1), (0, 1),
-         (1, 0),
+        (1, 0),
     ];
 
     let mut neighbors: Vec<Point> = Vec::new();
@@ -164,7 +159,7 @@ fn S_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
     neighbors
 }
 
-fn F_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn f_pipe_conns(point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let mut v = Vec::new();
 
     for option in &[&[0, 1], &[1, 0]] {
@@ -184,7 +179,8 @@ fn F_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
     }
     v
 }
-fn seven_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+
+fn seven_pipe_conns(point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let mut v = Vec::new();
 
     for option in &[&[0, -1], &[1, 0]] {
@@ -205,7 +201,7 @@ fn seven_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
     v
 }
 
-fn J_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn j_pipe_conns(point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let mut v = Vec::new();
 
     for option in &[&[-1, 0], &[0, -1]] {
@@ -228,7 +224,7 @@ fn J_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
 }
 
 
-fn L_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn l_pipe_conns(point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let mut v = Vec::new();
 
     for option in &[&[-1, 0], &[0, 1]] {
@@ -251,7 +247,7 @@ fn L_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
 }
 
 
-fn horizontal_pipe_conns(point: Point, input: Vec<Vec<Point>>) -> Vec<Point> {
+fn horizontal_pipe_conns(point: Point, input: &Vec<Vec<Point>>) -> Vec<Point> {
     let mut v = Vec::new();
 
     for &col_offset in &[1, -1] {
