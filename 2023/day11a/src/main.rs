@@ -50,12 +50,11 @@ fn bfs_distance(grid: &Vec<Vec<char>>, start: Point, target: Point) -> Option<us
 
 fn find_shortest_paths(grid: &Vec<Vec<char>>, targets: &Vec<Point>) -> HashMap<(Point, Point), usize> {
     let mut distances: HashMap<(Point, Point), usize> = HashMap::new();
-    let mut count = 0;
+
     for &start in targets {
         for &target in targets {
             if start != target && !distances.contains_key(&(target,start)){
                 if let Some(distance) = bfs_distance(grid, start, target) {
-                    count +=1 ;
                     distances.insert((start, target), distance);
                 }
             }
@@ -64,25 +63,6 @@ fn find_shortest_paths(grid: &Vec<Vec<char>>, targets: &Vec<Point>) -> HashMap<(
 
     distances
 }
-
-
-
-//
-// fn find_shortest_paths(grid: &Vec<Vec<char>>, targets: &Vec<Point>) -> HashMap<(Point, Point), usize> {
-//     let mut distances: HashMap<(Point, Point), usize> = HashMap::new();
-//
-//     targets.par_iter().for_each(|&start| {
-//         targets.iter().for_each(|&target| {
-//             if start != target && !distances.contains_key(&(target, start)) {
-//                 if let Some(distance) = bfs_distance(grid, start, target) {
-//                     distances.insert((start, target), distance);
-//                 }
-//             }
-//         });
-//     });
-//
-//     distances
-// }
 
 fn main() {
 
@@ -140,7 +120,7 @@ fn main() {
         }
     }
 
-    println!("{:?}", targets.len());
+    println!("{}", targets.len());
 
     let distances = find_shortest_paths(&input, &targets);
 
