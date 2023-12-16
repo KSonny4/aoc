@@ -1,12 +1,8 @@
-use std::collections::{HashMap, HashSet};
-use std::fmt::format;
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
+    Up, Down, Left, Right,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
@@ -16,9 +12,6 @@ struct BeamPoint {
     symbol: char,
 }
 
-
-
-// Implement Debug trait for BeamPoint
 impl std::fmt::Debug for BeamPoint {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -54,7 +47,7 @@ fn move_and_push(new_direction: Direction, beampoint: &BeamPoint, data: &Vec<Vec
     }
 }
 
-fn beam_travel(data: &Vec<Vec<char>>, start: BeamPoint ) -> HashSet<BeamPoint> {
+fn beam_travel(data: &Vec<Vec<char>>, start: BeamPoint) -> HashSet<BeamPoint> {
     let mut history: HashSet<BeamPoint> = HashSet::new();
     let mut queue: Vec<BeamPoint> = Vec::new();
     queue.push(start);
@@ -69,7 +62,6 @@ fn beam_travel(data: &Vec<Vec<char>>, start: BeamPoint ) -> HashSet<BeamPoint> {
                 Direction::Right => move_and_push(Direction::Right, &beampoint, data, 0, 1, &mut queue, &history),
                 Direction::Left => move_and_push(Direction::Left, &beampoint, data, 0, -1, &mut queue, &history),
                 Direction::Up => move_and_push(Direction::Up, &beampoint, data, -1, 0, &mut queue, &history),
-                _ => panic!("Unexpected beampoint: {:?}", beampoint),
             },
             '|' => match beampoint.came_from_direction {
                 Direction::Down => move_and_push(Direction::Down, &beampoint, data, 1, 0, &mut queue, &history),
@@ -78,7 +70,6 @@ fn beam_travel(data: &Vec<Vec<char>>, start: BeamPoint ) -> HashSet<BeamPoint> {
                     move_and_push(Direction::Down, &beampoint, data, 1, 0, &mut queue, &history);
                     move_and_push(Direction::Up, &beampoint, data, -1, 0, &mut queue, &history);
                 }
-                _ => panic!("Unexpected beampoint: {:?}", beampoint),
             },
             '-' => match beampoint.came_from_direction {
                 Direction::Right => move_and_push(Direction::Right, &beampoint, data, 0, 1, &mut queue, &history),
@@ -93,18 +84,15 @@ fn beam_travel(data: &Vec<Vec<char>>, start: BeamPoint ) -> HashSet<BeamPoint> {
                 Direction::Right => move_and_push(Direction::Down, &beampoint, data, 1, 0, &mut queue, &history),
                 Direction::Left => move_and_push(Direction::Up, &beampoint, data, -1, 0, &mut queue, &history),
                 Direction::Up => move_and_push(Direction::Left, &beampoint, data, 0, -1, &mut queue, &history),
-                _ => panic!("Unexpected beampoint: {:?}", beampoint),
             },
             '/' => match beampoint.came_from_direction {
                 Direction::Down => move_and_push(Direction::Left, &beampoint, data, 0, -1, &mut queue, &history),
                 Direction::Right => move_and_push(Direction::Up, &beampoint, data, -1, 0, &mut queue, &history),
                 Direction::Left => move_and_push(Direction::Down, &beampoint, data, 1, 0, &mut queue, &history),
                 Direction::Up => move_and_push(Direction::Right, &beampoint, data, 0, 1, &mut queue, &history),
-                _ => panic!("Unexpected beampoint: {:?}", beampoint),
             },
             _ => panic!("Unexpected beampoint: {:?}", beampoint),
         }
-
     }
 
     history
@@ -116,14 +104,37 @@ fn main() {
         .map(|line| line.chars().collect())
         .collect();
 
-
     let rows = data.len();
     let cols = data[0].len();
 
-    let top_row_starts: Vec<BeamPoint> = (0..cols).map(|i| BeamPoint { position: (0, i), came_from_direction: Direction::Down, symbol: data[0][i] }).collect();
-    let bottom_row_starts: Vec<BeamPoint> = (0..cols).map(|i| BeamPoint { position: (rows - 1, i), came_from_direction: Direction::Up, symbol: data[rows - 1][i] }).collect();
-    let left_column_starts: Vec<BeamPoint> = (0..rows).map(|i| BeamPoint { position: (i, 0), came_from_direction: Direction::Right, symbol: data[i][0] }).collect();
-    let right_column_starts: Vec<BeamPoint> = (0..rows).map(|i| BeamPoint { position: (i, cols - 1), came_from_direction: Direction::Left, symbol: data[i][cols - 1] }).collect();
+    let top_row_starts: Vec<BeamPoint> = (0..cols)
+        .map(|i| BeamPoint {
+            position: (0, i),
+            came_from_direction: Direction::Down,
+            symbol: data[0][i],
+        })
+        .collect();
+    let bottom_row_starts: Vec<BeamPoint> = (0..cols)
+        .map(|i| BeamPoint {
+            position: (rows - 1, i),
+            came_from_direction: Direction::Up,
+            symbol: data[rows - 1][i],
+        })
+        .collect();
+    let left_column_starts: Vec<BeamPoint> = (0..rows)
+        .map(|i| BeamPoint {
+            position: (i, 0),
+            came_from_direction: Direction::Right,
+            symbol: data[i][0],
+        })
+        .collect();
+    let right_column_starts: Vec<BeamPoint> = (0..rows)
+        .map(|i| BeamPoint {
+            position: (i, cols - 1),
+            came_from_direction: Direction::Left,
+            symbol: data[i][cols - 1],
+        })
+        .collect();
 
     let all_possible_starts: Vec<BeamPoint> = top_row_starts
         .into_iter()
@@ -132,14 +143,15 @@ fn main() {
         .chain(right_column_starts.into_iter())
         .collect();
 
-
-    let res = all_possible_starts.iter().map(
-        |start| {
+    let res = all_possible_starts
+        .iter()
+        .map(|start| {
             let history = beam_travel(&data, *start).into_iter();
-            let mut positions: HashSet<(usize, usize)> = history.map(|x| x.position).collect();
+            let positions: HashSet<(usize, usize)> = history.map(|x| x.position).collect();
             positions.iter().count()
-        }).max().unwrap();
-
+        })
+        .max()
+        .unwrap();
 
     println!("Result: {:?}", res);
 }
