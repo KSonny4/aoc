@@ -35,7 +35,7 @@ fn count_groups(input: &str) -> Vec<i32> {
 
 fn check_result(row: &str, damaged_groups_original: &[i32]) -> i32 {
     let res = count_groups(row);
-    println!("row: {:?}, res: {:?}, damaged_groups_original: {:?}", row, res, damaged_groups_original);
+    //println!("row: {:?}, res: {:?}, damaged_groups_original: {:?}", row, res, damaged_groups_original);
     if res == damaged_groups_original.to_vec() {
         1
     }
@@ -135,7 +135,7 @@ fn main() {
 ?###???????? 3,2,1";
 
     //let input = "????.######..#####. 1,6,5";
-    let total_arrangements: Vec<i32> = input
+    let total_arrangements: Vec<i32> = include_str!("input.txt")
         .lines()
         .enumerate()
         .map(|(index, line)| {
