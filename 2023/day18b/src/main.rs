@@ -14,6 +14,12 @@ enum Direction {
     Right,
 }
 
+#[derive(Debug, Clone, Copy)]
+struct Coordinates {
+    x: i64,
+    y: i64,
+}
+
 fn char_to_direction(c: char) -> Direction {
     match c {
         'U' => Direction::Up,
@@ -28,59 +34,85 @@ fn char_to_direction(c: char) -> Direction {
     }
 }
 
-fn calculate(actions: Vec<Action>) {
-    let mut location: (i64, i64) = (0, 0);
-    let mut sum1: i64 = 0;
-    let mut sum2: i64 = 0;
-    let mut sum_dir: i64 = 0;
 
-    for action in &actions {
-        let mut new_location = location.clone();
+fn get_dig_coordinates(
+    coordinates_list: &mut Vec<Coordinates>,
+    direction: Direction,
+    steps: i64,
+    x: i64,
+    y: i64,
+) {
 
-        let direction = match action.direction {
-            Direction::Left => (-1, 0),
-            Direction::Right => (1, 0),
-            Direction::Up => (0, -1),
-            Direction::Down => (0, 1),
-        };
 
-        new_location = (
-            location.0 + direction.0 * action.value,
-            location.1 + direction.1 * action.value,
-        );
-        sum1 = sum1 + (location.0) * (new_location.1);
-        sum2 = sum2 + (location.1) * (new_location.0);
-        sum_dir += action.value;
-        location = new_location;
+    let direction = match direction {
+        Direction::Left => ( -1, 0),
+        Direction::Right => ( 1, 0),
+        Direction::Up => (0 , -1),
+        Direction::Down => (0 ,  1),
+    };
+
+
+    coordinates_list.push(Coordinates {
+        x: x + direction.0 * steps,
+        y: y + direction.1 * steps,
+    });
+}
+
+
+fn calculate_area(coordinates_list: &[Coordinates]) -> f64 {
+    let coordinates_count = coordinates_list.len();
+    let mut sum1 = 0;
+    let mut sum2 = 0;
+
+    for i in 0..coordinates_count - 1 {
+        sum1 += coordinates_list[i].x * coordinates_list[i + 1].y;
+        sum2 += coordinates_list[i].y * coordinates_list[i + 1].x;
     }
 
-    let area = (sum1 - sum2).abs() / 2;
-    println!("area: {:?}", area + sum_dir / 2 + 1);
+    // First and last coordinates
+    sum1 += coordinates_list[coordinates_count - 1].x * coordinates_list[0].y;
+    sum2 += coordinates_list[0].x * coordinates_list[coordinates_count - 1].y;
+
+    f64::abs((sum1 - sum2) as f64) / 2.0
 }
+
+fn calculate_inside(area: f64, coordinates_count: i64) -> i64 {
+    (area - (coordinates_count / 2) as f64 + 1.0) as i64
+}
+
 
 fn main() {
     let input = include_str!("input.txt");
+    let mut coordinates_list = vec![Coordinates { x: 0, y: 0 }];
+    let mut coordinates_count = 0;
+
     let re = Regex::new(r"([RDLU]) (\d+) \((#[0-9a-fA-F]{6})\)").unwrap();
     let hexa_to_int = |s: &str| i64::from_str_radix(s, 16).unwrap();
-    let actions: Vec<Action> = re
+     re
         .captures_iter(input)
-        .map(|cap| {
+        .for_each(|cap| {
             let hex_color = &cap[3][1..6];
             let value = hexa_to_int(hex_color);
 
             let direction_char = &cap[3][6..7];
             let direction = char_to_direction(direction_char.chars().next().unwrap());
-
-            Action {
+            coordinates_count += value;
+            let binding = coordinates_list.clone();
+            let last_coordinates = binding.last().unwrap();get_dig_coordinates(
+                &mut coordinates_list,
                 direction,
                 value,
-            }
-        })
-        .collect();
+                last_coordinates.x,
+                last_coordinates.y,
+            );
 
-    for action in &actions {
-        println!("{:?}", action);
-    }
+        });
 
-    calculate(actions);
+    // Calculate inside area
+    let area = calculate_area(&coordinates_list.clone());
+    // Calculate points inside
+    let area_points = calculate_inside(area, coordinates_count);
+    // Add points from inside and outside
+    let result = area_points + coordinates_count;
+    println!("{}", result);
 }
