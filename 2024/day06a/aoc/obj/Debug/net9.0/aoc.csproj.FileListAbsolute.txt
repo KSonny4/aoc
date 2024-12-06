@@ -1,0 +1,15 @@
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/bin/Debug/net9.0/aoc
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/bin/Debug/net9.0/aoc.deps.json
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/bin/Debug/net9.0/aoc.runtimeconfig.json
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/bin/Debug/net9.0/aoc.dll
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/bin/Debug/net9.0/aoc.pdb
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.GeneratedMSBuildEditorConfig.editorconfig
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.AssemblyInfoInputs.cache
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.AssemblyInfo.cs
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.csproj.CoreCompileInputs.cache
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.sourcelink.json
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.dll
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/refint/aoc.dll
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.pdb
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/aoc.genruntimeconfig.cache
+/Users/petrkubelka/personal_git_projects/aoc/2024/day06a/aoc/obj/Debug/net9.0/ref/aoc.dll
