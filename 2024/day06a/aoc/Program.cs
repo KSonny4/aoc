@@ -60,7 +60,8 @@ class Program
                 row.Select((c, j) => new { Char = c, Row = i, Col = j }))
             .Where(item => item.Char == '^')
             .Select(item => (item.Row, item.Col))
-            .ToList()[0];
+            .ToList()
+            .First();
 
         (var x, var y) = guardCoordinates;
         var guard = "^";

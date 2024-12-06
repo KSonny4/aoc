@@ -76,7 +76,8 @@ class Program
                 row.Select((c, j) => new { Char = c, Row = i, Col = j }))
             .Where(item => item.Char == '^')
             .Select(item => (item.Row, item.Col))
-            .ToList()[0];
+            .ToList()
+            .First();
 
         // get all "." from data
         var possibleObstacles = data
