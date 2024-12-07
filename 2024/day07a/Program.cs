@@ -102,6 +102,10 @@ class Program
                     default:
                         throw new InvalidOperationException($"Unsupported operator: {signList[i]}");
                 }
+                if (result > target)
+                {
+                    return false;
+                }
             }
 
             // If the result matches the target, return true immediately
