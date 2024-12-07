@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics; // Add this namespace for Stopwatch
 
 public class OperatorPermutations
 {
@@ -36,6 +37,9 @@ class Program
 
     static void Solve(string filePath)
     {
+        // Start measuring time
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
         var content = File.ReadAllText(filePath);
 
         var data = content
@@ -62,6 +66,10 @@ class Program
             .Sum(); // Sum of matching items
 
         Console.WriteLine(matchingItems);
+
+        // Stop measuring time and display the elapsed time
+        stopwatch.Stop();
+        Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
     }
 
     static Dictionary<int, List<List<string>>> GenerateOperatorPermutations(List<int> numberLists) =>
