@@ -3,33 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-public class OperatorPermutations
-{
-    private static readonly string[] Operators = { "+", "*", "||" };
-
-    // Functional approach to generating all permutations of given count
-    public static IEnumerable<List<string>> GetOperatorPermutations(int count)
-    {
-        // Base case: If count is zero, return an empty list
-        if (count == 0)
-        {
-            return new[] { new List<string>() };
-        }
-
-        // Recursive case: Generate permutations for count-1, then prepend each operator
-        return GetOperatorPermutations(count - 1)
-            .SelectMany(prevPerm => Operators, 
-                (prevPerm, op) => prevPerm.Concat(new[] { op }).ToList());
-    }
-}
-
 class Program
 {
     static void Main(string[] args)
     {
         var inputFilePath = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
-            "../../../input.txt"
+            "../../../input_test.txt"
         );
         Solve(inputFilePath);
     }
@@ -68,9 +48,13 @@ class Program
         numberLists
             .ToDictionary(
                 cnt => cnt, // Use the length of the list as the key
-                cnt =>  OperatorPermutations.GetOperatorPermutations(cnt - 1).ToList() // Generate and collect permutations
+                cnt => GetOperatorPermutations(cnt - 1).ToList() // Generate and collect permutations
             );
 
+    static IEnumerable<List<string>> GetOperatorPermutations(int count) =>
+        Enumerable.Range(0, 1 << count) // Generate numbers from 0 to 2^count - 1
+            .Select(i => Convert.ToString(i, 2).PadLeft(count, '0')) // Convert each number to binary
+            .Select(binary => binary.Select(bit => bit == '0' ? "+" : (bit == '1' ? "*" : "||")).ToList()); // Map bits to operators, adding `||` for third option
 
     static bool ComputeAndCheck(List<List<string>> signs, List<long> numbers, long target) // Use long here
     {
@@ -89,8 +73,9 @@ class Program
                         result *= numbers[i + 1];
                         break;
                     case "||":
+                        // Concatenate the numbers as strings and then parse them as long
                         result = long.Parse(result.ToString() + numbers[i + 1].ToString());
-                        break;                    
+                        break;
                     default:
                         throw new InvalidOperationException($"Unsupported operator: {signList[i]}");
                 }
